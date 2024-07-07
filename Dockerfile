@@ -12,6 +12,7 @@ RUN apt-get update && \
 # Create the Squid configuration file
 RUN rm /etc/squid/squid.conf
 COPY . /etc/squid
+RUN sudo chown -R proxy:proxy /var/cache/squid3 
 # Expose the Squid port
 EXPOSE 3128
 

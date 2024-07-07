@@ -10,10 +10,9 @@ RUN apt-get update && \
     apt-get clean
 
 # Create the Squid configuration file
-RUN rm /etc/squid/squid.conf && \
-    echo "http_port 3128" >> /etc/squid/squid.conf && \
-    echo "http_access allow all" >> /etc/squid/squid.conf
-
+RUN rm /etc/squid/squid.conf
+COPY . /etc/squid
+RUN systemctl restart squid
 # Expose the Squid port
 EXPOSE 3128
 

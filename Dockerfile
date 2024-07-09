@@ -9,7 +9,7 @@ RUN apt-get update && \
 # Create a configuration file for Dante
 RUN echo "logoutput: /var/log/danted.log" >> /etc/danted.conf
 RUN echo "internal: 0.0.0.0 port = 1080" >> /etc/danted.conf
-RUN echo "external: eth1" >> /etc/danted.conf
+RUN echo "external:" $(ip -o -4 route show to default | awk '{print $5}') >> /etc/danted.conf
 RUN echo "method: username none" >> /etc/danted.conf
 
 # Expose the SOCKS4 port

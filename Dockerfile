@@ -13,6 +13,7 @@ RUN apt-get update && \
 RUN > /etc/squid/squid.conf
 COPY . .
 RUN cat squid2.conf > /etc/squid/squid.conf
+RUN service squid restart
 # Expose the Squid port
 EXPOSE 8888
 

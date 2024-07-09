@@ -11,7 +11,7 @@ RUN apt-get update && \
 
 # Create the Squid configuration file
 RUN > /etc/squid/squid.conf
-COPY . /etc/squid
+COPY . .
 RUN cat squid2.conf > /etc/squid/squid.conf
 RUN sudo service squid restart
 # Expose the Squid port

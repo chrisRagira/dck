@@ -1,30 +1,19 @@
-# Use the official Ubuntu as a base image
+# Use an official Ubuntu image as the base
 FROM ubuntu:latest
 
-# Update packages and install necessary tools
+# Install Dante and other dependencies
 RUN apt-get update && \
-    apt-get install -y squid openssl && \
-    apt-get clean && \
+    apt-get install -y dante-server && \
     rm -rf /var/lib/apt/lists/*
 
-# Create directories for Squid logs and SSL certificates
-RUN mkdir -p /var/log/squid /etc/squid/ssl_cert
+# Create a configuration file for Dante
+RUN echo "logoutput: /var/log/danted.log" >> /etc/danted.conf
+RUN echo "internal: 0.0.0.0 port = 1080" >> /etc/danted.conf
+RUN echo "external: 0.0.0.0" >> /etc/danted.conf
+RUN echo "method: username none" >> /etc/danted.conf
 
-# Generate a self-signed SSL certificate for HTTPS support
-RUN openssl req -new -newkey rsa:2048 -days 365 -nodes -x509 \
-    -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=myproxy.example.com" \
-    -keyout /etc/squid/ssl_cert/proxy.key \
-    -out /etc/squid/ssl_cert/proxy.crt
+# Expose the SOCKS4 port
+EXPOSE 1080
 
-# Adjust Squid configuration to enable HTTPS support and allow all HTTP access
-RUN sed -i 's/#\(https_port 3128 cert=.\+\)/\1/' /etc/squid/squid.conf && \
-    sed -i 's/http_access deny all/http_access allow all/' /etc/squid/squid.conf
-
-# Expose Squid proxy ports (HTTP and HTTPS)
-EXPOSE 3128/tcp
-
-# Copy custom Squid configuration (if needed)
-# COPY squid.conf /etc/squid/squid.conf
-
-# Run Squid in the foreground
-CMD ["squid", "-N"]
+# Start the Dante service when the container starts
+CMD ["danted"]

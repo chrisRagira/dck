@@ -3,13 +3,14 @@ FROM ubuntu:latest
 
 # Install Dante and other dependencies
 RUN apt-get update && \
-    apt-get install -y dante-server && \
-    rm -rf /var/lib/apt/lists/*
+apt-get install -y dante-server && \
+apt-get install -y iproute2 && \
+rm -rf /var/lib/apt/lists/*
 
 # Create a configuration file for Dante
 RUN echo "logoutput: /var/log/danted.log" >> /etc/danted.conf
 RUN echo "internal: 0.0.0.0 port = 1080" >> /etc/danted.conf
-# RUN echo "external: $(ip -o -4 route show to default | awk '{print $5}')"  >> /etc/danted.conf
+RUN echo "external: $(ip -o -4 route show to default | awk '{print $5}')"  >> /etc/danted.conf
 RUN ip -o -4 route show to default | awk '{print $5}'
 RUN echo "socksmethod: none" >> /etc/danted.conf
 

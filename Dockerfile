@@ -10,7 +10,7 @@ RUN apt-get update && \
 RUN echo "logoutput: /var/log/danted.log" >> /etc/danted.conf
 RUN echo "internal: 0.0.0.0 port = 1080" >> /etc/danted.conf
 RUN echo "external:" $(ip -o -4 route show to default | awk '{print $5}') >> /etc/danted.conf
-RUN echo "socksmethod: username" >> /etc/danted.conf
+# RUN echo "socksmethod: username" >> /etc/danted.conf
 
 # Expose the SOCKS4 port
 EXPOSE 1080
